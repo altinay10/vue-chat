@@ -45,7 +45,7 @@ export default {
 <template>
   <div class="root">
     <div class="container">
-      <p>Welcome to my chat. Dont forget the ruler of here is me!</p>
+      <p>Welcome to Chat</p>
       <messageComponent
         v-for="message in messages"
         :key="message"
@@ -99,8 +99,9 @@ body {
 }
 .container p {
   color: black;
-  font-size: 18px;
   margin: 15px;
+  font-size: 18px;
+  text-align: center;
 }
 .root input {
   margin: 0px;
