@@ -100,7 +100,7 @@ body {
 .container p {
   color: black;
   margin: 15px;
-  font-size: 18px;
+  font-size: 20px;
   text-align: center;
 }
 .root input {
