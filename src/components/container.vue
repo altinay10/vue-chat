@@ -5,7 +5,9 @@ export default {
   data() {
     return {
       messages: [],
-      message: "",
+      message: { username: "", text: "" },
+      username: "",
+      text: "",
       conn: "",
     };
   },
@@ -14,8 +16,11 @@ export default {
   },
   methods: {
     sendMsg() {
-      this.conn.send(this.message);
-      console.log("bura çalıştı");
+      if (this.text.split("").some((x) => x != " ")) {
+        this.conn.send(
+          JSON.stringify({ username: this.username, text: this.text })
+        );
+      }
     },
     makeid(length) {
       var result = "";
@@ -30,13 +35,15 @@ export default {
       return result;
     },
   },
+  created() {
+    this.username = window.prompt("Enter Username");
+  },
   mounted() {
     this.conn = new WebSocket("ws://192.168.1.34:8000/ws/" + this.makeid(20));
     this.conn.onmessage = (event) => {
-      console.log(event.data);
-      this.message = event.data;
+      this.message = JSON.parse(event.data);
       this.messages.push(this.message);
-      this.message = "";
+      this.text = "";
     };
   },
 };
@@ -45,16 +52,18 @@ export default {
 <template>
   <div class="root">
     <div class="container">
-      <p>Welcome to Chat</p>
       <messageComponent
-        v-for="message in messages"
-        :key="message"
-        v-text="message"
+        v-for="(message, i) in messages"
+        :key="i"
+        :message="message"
+        :lastUser="
+          messages.length >= 2 ? messages[messages.length - 2].username : null
+        "
       />
     </div>
     <input
       @keypress.enter="sendMsg()"
-      v-model="message"
+      v-model="text"
       type="text"
       id="text-input"
       placeholder="Enter your message"
@@ -63,55 +72,38 @@ export default {
 </template>
 
 <style>
-body {
+.root {
   height: 100%;
+  width: 50%;
+  margin: 0%;
+  background: linear-gradient(135deg, #7886ff, #8ddbf3);
+  box-shadow: -1px -20px 20px 10px #3d6dff6e;
+}
+.root input {
+  height: 6%;
   width: 100%;
   margin: 0px;
-  padding: 0px;
-  scroll-behavior: none;
-  display: flex;
-  justify-content: center;
-}
-.root {
-  margin: 0px;
-  width: 500px;
-  height: 100%;
-  background-color: rgba(15, 146, 197, 0.911);
-}
-::-webkit-scrollbar {
-  width: 10px;
-}
-::-webkit-scrollbar-thumb {
-  background: crimson;
-  border-radius: 10px;
-}
-::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 15px gold;
-  border-radius: 10px;
+  padding-left: 2%;
+  background-color: rgba(18, 179, 104, 0.911);
+  box-sizing: border-box;
+  border-width: 0px;
+  outline: none;
+  font-size: 18px;
 }
 .container {
-  width: 500px;
   height: 94%;
+  width: 100%;
   padding: 0px;
   overflow: auto;
   scroll-behavior: smooth;
   text-align: start;
 }
 .container p {
+  max-width: 90%;
   color: black;
   margin: 15px;
   font-size: 20px;
-  text-align: center;
-}
-.root input {
-  margin: 0px;
-  padding-left: 10px;
-  width: 100%;
-  box-sizing: border-box;
-  height: 6%;
-  border-width: 0px;
-  background-color: rgba(18, 179, 104, 0.911);
-  outline: none;
-  font-size: 18px;
+  text-align: start;
+  margin-right: 40px;
 }
 </style>
