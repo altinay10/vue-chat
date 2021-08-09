@@ -5,7 +5,6 @@ export default {
   data() {
     return {
       messages: [],
-      message: { username: "", text: "" },
       username: "",
       text: "",
       conn: "",
@@ -23,13 +22,12 @@ export default {
       }
     },
     makeid(length) {
-      var result = "";
-      var characters =
+      let result = "";
+      let characters =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      var charactersLength = characters.length;
-      for (var i = 0; i < length; i++) {
+      for (let i = 0; i < length; i++) {
         result += characters.charAt(
-          Math.floor(Math.random() * charactersLength)
+          Math.floor(Math.random() * characters.length)
         );
       }
       return result;
@@ -41,8 +39,7 @@ export default {
   mounted() {
     this.conn = new WebSocket("ws://192.168.1.34:8000/ws/" + this.makeid(20));
     this.conn.onmessage = (event) => {
-      this.message = JSON.parse(event.data);
-      this.messages.push(this.message);
+      this.messages.push(JSON.parse(event.data));
       this.text = "";
     };
   },
