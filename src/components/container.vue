@@ -37,7 +37,7 @@ export default {
     this.username = window.prompt("Enter Username");
   },
   mounted() {
-    this.conn = new WebSocket("ws://192.168.1.34:8000/ws/" + this.makeid(20));
+    this.conn = new WebSocket("ws://127.0.0.1:8000/ws/" + this.makeid(20));
     this.conn.onmessage = (event) => {
       this.messages.push(JSON.parse(event.data));
       this.text = "";
